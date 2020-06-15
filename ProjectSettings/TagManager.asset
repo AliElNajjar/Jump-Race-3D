@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Platform
   - Blue Platform
+  - Banner
+  - Bundle
   layers:
   - Default
   - TransparentFX

@@ -10,40 +10,37 @@ public class CharacterController : MonoBehaviour
     }
 
     [SerializeField] private float m_moveSpeed = 2;
-    //[SerializeField] private float m_turnSpeed = 200;
     [SerializeField] private float m_jumpForce = 4;
 
     [SerializeField] private Animator m_animator;
     [SerializeField] private Rigidbody m_rigidBody;
 
-    private float m_currentV = 0;
-    private float m_currentH = 0;
-
-    private readonly float m_interpolation = 10;
-    public float interpolation;
-    private Vector3 m_Move;
-
     private bool m_wasGrounded;
-    private Vector3 m_currentDirection = Vector3.zero;
-
-    //private float m_jumpTimeStamp = 0;
-    //private float m_minJumpInterval = 0.25f;
 
     private bool m_isGrounded;
 
+    private bool ismoving = false;
+
     private AudioSource jumpSound;
 
-    //private float jumpTimer = 0;
     private float jumpDistance = 0;
     private Vector3 firstPosition;
     private Vector3 secondPosition;
 
     private List<Collider> m_collisions = new List<Collider>();
 
+    Touch touch;
+    public float rotationSpeedModifier = 5.0f;
+    private Quaternion rotationY;
+    private Vector3 currentDirection;
+    private float firstTouch;
+    [SerializeField]
+    private float forwardOffset = 40f;
+
     void Awake()
     {
-        if(!m_animator) { gameObject.GetComponent<Animator>(); }
-        if(!m_rigidBody) { gameObject.GetComponent<Animator>(); }
+        if (!m_animator) { gameObject.GetComponent<Animator>(); }
+        if (!m_rigidBody) { gameObject.GetComponent<Animator>(); }
     }
 
     private void Start()
@@ -54,11 +51,12 @@ public class CharacterController : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         ContactPoint[] contactPoints = collision.contacts;
-        for(int i = 0; i < contactPoints.Length; i++)
+        for (int i = 0; i < contactPoints.Length; i++)
         {
             if (Vector3.Dot(contactPoints[i].normal, Vector3.up) > 0.5f)
             {
-                if (!m_collisions.Contains(collision.collider)) {
+                if (!m_collisions.Contains(collision.collider))
+                {
                     m_collisions.Add(collision.collider);
                 }
                 m_isGrounded = true;
@@ -78,14 +76,15 @@ public class CharacterController : MonoBehaviour
             }
         }
 
-        if(validSurfaceNormal)
+        if (validSurfaceNormal)
         {
             m_isGrounded = true;
             if (!m_collisions.Contains(collision.collider))
             {
                 m_collisions.Add(collision.collider);
             }
-        } else
+        }
+        else
         {
             if (m_collisions.Contains(collision.collider))
             {
@@ -97,7 +96,7 @@ public class CharacterController : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        if(m_collisions.Contains(collision.collider))
+        if (m_collisions.Contains(collision.collider))
         {
             m_collisions.Remove(collision.collider);
         }
@@ -105,12 +104,12 @@ public class CharacterController : MonoBehaviour
 
     }
 
-	void FixedUpdate ()
+    void FixedUpdate()
     {
         m_animator.SetBool("Grounded", m_isGrounded);
-                
+
         if (GameController.SharedInstance.go == true)
-        Movement();
+            Movement();
 
         JumpingAndLanding();
 
@@ -120,41 +119,48 @@ public class CharacterController : MonoBehaviour
 
     private void Movement()
     {
-        float v = Input.GetAxis("Vertical");
-        float h = Input.GetAxis("Horizontal");
-
-        //no backwards
-        v = Mathf.Clamp01(v);
-
-        Transform camera = Camera.main.transform;
-
-        //m_currentV = Mathf.Lerp(m_currentV, v, Time.deltaTime * m_interpolation);
-        //m_currentH = Mathf.Lerp(m_currentH, h, Time.deltaTime * m_interpolation);
-
-        Vector3 direction = camera.forward * v + camera.right * h;
-
-        float directionLength = direction.magnitude;
-        direction.y = 0;
-        direction = direction.normalized *directionLength;
-
-        if(direction != Vector3.zero)
+        if (Input.touchCount > 0)
         {
-            //m_currentDirection = Vector3.Lerp(m_currentDirection, direction, Time.deltaTime * m_interpolation);
-            m_currentDirection = Vector3.Lerp(m_currentDirection, direction, Time.deltaTime * interpolation);
+            touch = Input.GetTouch(0);
 
-            transform.rotation = Quaternion.LookRotation(m_currentDirection);
-            //transform.position += m_currentDirection * m_moveSpeed * Time.deltaTime;
-            m_Move = (v * Vector3.forward) * m_moveSpeed * Time.deltaTime;
+            if (touch.phase == TouchPhase.Began)
+            {
+                firstTouch = touch.position.y;
+            }
             
-            /*direction = camera.forward * v;
-            m_currentDirection = Vector3.Lerp(m_currentDirection, direction, Time.deltaTime * interpolation);
-            m_Move = (m_currentDirection) * m_moveSpeed * Time.deltaTime;*/
-            
-            m_rigidBody.transform.Translate(m_Move);
+            if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
+            {
+                rotationY = Quaternion.Euler(0f, touch.deltaPosition.x * rotationSpeedModifier * Time.fixedDeltaTime, 0f);
 
-            //m_animator.SetFloat("MoveSpeed", direction.magnitude);
+                transform.rotation *= rotationY;
+
+                float deltaPositionY = touch.position.y - firstTouch;
+
+                if (deltaPositionY >= forwardOffset || ismoving)
+                {
+                    ismoving = true;
+
+                    Vector3 direction = new Vector3(0f, 0f, m_moveSpeed * Time.fixedDeltaTime);
+
+                    currentDirection = Vector3.Lerp(currentDirection, direction, 0.5f);
+
+                    transform.Translate(currentDirection, Space.Self);
+
+                }
+                else
+                {
+                    ismoving = false;
+
+                    m_rigidBody.velocity = new Vector3(0, m_rigidBody.velocity.y, 0);
+
+                }
+
+            }
+            else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+            {
+                ismoving = false;
+            }
         }
-
 
     }
 
@@ -189,7 +195,7 @@ public class CharacterController : MonoBehaviour
 
             }
         }
-        
+
     }
 
     private void CalJumpDistance()

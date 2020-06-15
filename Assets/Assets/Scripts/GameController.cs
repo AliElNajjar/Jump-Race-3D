@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public class GameController : MonoBehaviour
     public GameObject startingText;
     public GameObject gameTitle;
     public GameObject levelComplete;
+    public GameObject levelLost;
     
     private Animation commentAnimation;
 
@@ -44,7 +46,6 @@ public class GameController : MonoBehaviour
 
         commentText.text = null;
 
-        //background music
     }
 
 
@@ -138,6 +139,29 @@ public class GameController : MonoBehaviour
 
 
 
+    }
+
+    public void NextLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
+
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void LevelLost()
+    {
+        go = false;
+
+        levelLost.gameObject.SetActive(true);
+        commentText.gameObject.SetActive(false);
+        progressBar.gameObject.SetActive(false);
+
+        player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+
+        
     }
 
     /*public void EndGame()

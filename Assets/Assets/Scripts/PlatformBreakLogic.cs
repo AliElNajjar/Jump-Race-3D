@@ -7,8 +7,8 @@ public class PlatformBreakLogic : MonoBehaviour
 {
     public Material[] material;
     
-    public GameObject shattered;
     public GameObject banner;
+    public GameObject rubble;
 
     private Renderer renderer;
     private float jumpCount = 0;
@@ -90,12 +90,11 @@ public class PlatformBreakLogic : MonoBehaviour
 
     IEnumerator DestroyPlatform()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
 
-        Instantiate(shattered, transform.position, transform.rotation);
         gameObject.SetActive(false);
         banner.SetActive(false);
-
+        rubble.SetActive(true);
     }
 
 
