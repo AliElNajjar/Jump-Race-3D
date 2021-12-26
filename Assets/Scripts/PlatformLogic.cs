@@ -6,7 +6,7 @@ public class PlatformLogic : MonoBehaviour
 {
     public Material[] material;
 
-    private Renderer renderer;
+    private Renderer _renderer;
     private float jumpCount = 0;
     private AudioSource smash;
 
@@ -19,7 +19,7 @@ public class PlatformLogic : MonoBehaviour
 
     private void Start()
     {
-        renderer = gameObject.GetComponent<Renderer>();
+        _renderer = gameObject.GetComponent<Renderer>();
         centerOfPlatform = transform.position;
         numberOfPlatforms = GameObject.FindGameObjectsWithTag("Platform").Length * 1.0f;
         platformNumber = Convert.ToInt32(transform.parent.GetComponentInChildren<Text>().text);
@@ -48,7 +48,7 @@ public class PlatformLogic : MonoBehaviour
     {
         if (jumpCount == 0) // first hit
         {
-            renderer.material = material[0]; // first crack
+            _renderer.material = material[0]; // first crack
 
             jumpCount++;
 
@@ -59,7 +59,7 @@ public class PlatformLogic : MonoBehaviour
         }
         else if (jumpCount >= 1) // second hit
         {
-            renderer.material = material[1]; // second crack
+            _renderer.material = material[1]; // second crack
 
             jumpCount++;
         }

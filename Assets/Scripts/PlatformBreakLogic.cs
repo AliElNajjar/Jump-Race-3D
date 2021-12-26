@@ -10,7 +10,7 @@ public class PlatformBreakLogic : MonoBehaviour
     public GameObject banner;
     public GameObject rubble;
 
-    private Renderer renderer;
+    private Renderer _renderer;
     private float jumpCount = 0;
      private AudioSource smash;
 
@@ -23,7 +23,7 @@ public class PlatformBreakLogic : MonoBehaviour
 
     private void Start()
     {
-        renderer = gameObject.GetComponent<Renderer>();
+        _renderer = gameObject.GetComponent<Renderer>();
         centerOfPlatform = transform.position;
         numberOfPlatforms = GameObject.FindGameObjectsWithTag("Platform").Length * 1.0f;
         platformNumber = Convert.ToInt32(transform.parent.GetComponentInChildren<Text>().text);
@@ -44,7 +44,7 @@ public class PlatformBreakLogic : MonoBehaviour
     {
         if (jumpCount == 0) // first hit
         {
-            renderer.material = material[0]; // first crack
+            _renderer.material = material[0]; // first crack
 
             jumpCount++;
 
@@ -53,7 +53,7 @@ public class PlatformBreakLogic : MonoBehaviour
         }
         else if (jumpCount == 1) // second hit
         {
-            renderer.material = material[1]; // second crack
+            _renderer.material = material[1]; // second crack
 
             jumpCount++;
         }

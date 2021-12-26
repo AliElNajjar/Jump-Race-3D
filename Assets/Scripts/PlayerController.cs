@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class CharacterController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public void Initialize(GameObject character)
     {
@@ -16,11 +16,8 @@ public class CharacterController : MonoBehaviour
     [SerializeField] private Rigidbody m_rigidBody;
 
     private bool m_wasGrounded;
-
     private bool m_isGrounded;
-
     private bool ismoving = false;
-
     private AudioSource jumpSound;
 
     private float jumpDistance = 0;
@@ -29,7 +26,7 @@ public class CharacterController : MonoBehaviour
 
     private List<Collider> m_collisions = new List<Collider>();
 
-    Touch touch;
+    private Touch touch;
     public float rotationSpeedModifier = 5.0f;
     private Quaternion rotationY;
     private Vector3 currentDirection;
