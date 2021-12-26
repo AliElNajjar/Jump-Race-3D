@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -19,7 +21,6 @@ public class PlayerController : MonoBehaviour
     private bool m_isGrounded;
     private bool ismoving = false;
     private AudioSource jumpSound;
-
     private float jumpDistance = 0;
     private Vector3 firstPosition;
     private Vector3 secondPosition;
@@ -34,15 +35,37 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float forwardOffset = 40f;
 
+    private TouchControls touchControls;
+
     void Awake()
     {
         if (!m_animator) { gameObject.GetComponent<Animator>(); }
         if (!m_rigidBody) { gameObject.GetComponent<Animator>(); }
+        
+        touchControls = new TouchControls();
     }
 
     private void Start()
     {
         jumpSound = gameObject.GetComponent<AudioSource>();
+        touchControls.Touch.TouchInput;
+        input.started += ReadInput;
+        input.canceled += (ctx) => readInput = false;
+    }
+
+    private void ReadInput(InputAction.CallbackContext obj)
+    {
+        obj.ToString
+    }
+
+    private void OnEnable()
+    {
+        touchControls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        touchControls.Disable();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -101,12 +124,11 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    void FixedUpdate()
+    void Update()
     {
         m_animator.SetBool("Grounded", m_isGrounded);
-
-        if (GameController.SharedInstance.go == true)
-            Movement();
+        //if (GameController.SharedInstance.go == true)
+        Movement();
 
         JumpingAndLanding();
 
@@ -116,6 +138,7 @@ public class PlayerController : MonoBehaviour
 
     private void Movement()
     {
+        if (!readInput) return;
         if (Input.touchCount > 0)
         {
             touch = Input.GetTouch(0);
@@ -124,7 +147,7 @@ public class PlayerController : MonoBehaviour
             {
                 firstTouch = touch.position.y;
             }
-            
+
             if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
             {
                 rotationY = Quaternion.Euler(0f, touch.deltaPosition.x * rotationSpeedModifier * Time.fixedDeltaTime, 0f);

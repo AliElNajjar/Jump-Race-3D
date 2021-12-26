@@ -60,14 +60,14 @@ public class GameController : MonoBehaviour
         }*/
 
 
-        if (Input.GetMouseButtonDown(0) && go == false)
-        {
-            startingText.SetActive(false);
-            gameTitle.SetActive(false);
-            progressBar.gameObject.SetActive(true);
-            commentText.gameObject.SetActive(true);
-            go = true;
-        }
+        //if (Input.GetMouseButtonDown(0) && go == false)
+        //{
+        //    startingText.SetActive(false);
+        //    gameTitle.SetActive(false);
+        //    progressBar.gameObject.SetActive(true);
+        //    commentText.gameObject.SetActive(true);
+        //    go = true;
+        //}
 
     }
     public void UpdateProgressUI(float newProgress)
