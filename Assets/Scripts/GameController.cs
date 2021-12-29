@@ -135,7 +135,7 @@ public class GameController : MonoBehaviour
 
         //fireworks
 
-        player.GetComponent<Animator>().Play("Wave");
+        player.GetComponent<Animator>().SetTrigger("Wave");
 
 
 
