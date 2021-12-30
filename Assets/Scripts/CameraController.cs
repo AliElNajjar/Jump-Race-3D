@@ -10,6 +10,12 @@ public class CameraController : MonoBehaviour
         if (player == null) player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
+    private void Update()
+    {
+        //Read Rotation value from InputManager and rotate camera here.
+        //player follow camera forward horizontally, camera follows player vertically
+    }
+
     private void LateUpdate()
     {
         transform.parent.position = player.TransformPoint(offsetPosition);
