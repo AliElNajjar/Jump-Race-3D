@@ -117,17 +117,14 @@ public class PlayerController : MonoBehaviour
             jumpDistance = 0;
             firstPosition = transform.position;
             jumpSound.Play();
-            Debug.Log("jump " + counter);
             counter++;
             rb.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
-            Debug.Log(Vector3.up * m_jumpForce + "----" + rb.velocity);
 
         }
 
         if (!isGrounded && wasGrounded) //Jump
         {
             //animator.SetTrigger("Land");
-            Debug.Log("land");
             CalJumpDistance();
         }
 
@@ -148,7 +145,6 @@ public class PlayerController : MonoBehaviour
         if (jumpDistance >= 20)
         {
             GameController.SharedInstance.JumpComment("longJump");
-            Debug.Log("Distance");
         }
 
     }

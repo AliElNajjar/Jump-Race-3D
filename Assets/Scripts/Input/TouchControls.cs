@@ -47,7 +47,7 @@ public class @TouchControls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""8b6b989f-889b-40a4-93c7-f7d8873a3c0e"",
-                    ""path"": ""<Pointer>/delta"",
+                    ""path"": ""<Touchscreen>/delta"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse;Touch"",

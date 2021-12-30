@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Utils;
 
 public class InputManager : MonoBehaviour
 {
@@ -12,8 +13,10 @@ public class InputManager : MonoBehaviour
     #endregion
 
     private TouchControls controls;
-    private InputAction rotationDir;
-    private Quaternion rot;
+    private InputAction rotationAction;
+    private Vector3 camRotation;
+    public float rotationSpeedModifier = 5.0f;
+    private Quaternion rotationY;
 
     private void Awake()
     {
@@ -32,28 +35,26 @@ public class InputManager : MonoBehaviour
 
     void Start()
     {
-        //controls.Touch.PrimaryContact.started += StartTouchPrimary;
-        //controls.Touch.PrimaryContact.canceled += EndTouchPrimary;
-        rotationDir = controls.Touch.Rotate;
+        rotationAction = controls.Touch.Rotate;
+        camRotation = Camera.main.transform.eulerAngles;
     }
 
     private void Update()
     {
-        ////Camera.main.transform.position += (Vector3)controls.Touch.Rotate.ReadValue<Vector2>() * Time.deltaTime;
-        //Vector3 dir = controls.Touch.Rotate.ReadValue<Vector2>();
-        //dir.z = 0f;
-        ////Vector3 worldPoint = Camera.main.ScreenToWorldPoint(mousePos);
-        //rot.SetFromToRotation(Camera.main.transform.forward, dir);
-        //Camera.main.transform.LookAt(dir - Camera.main.transform.forward);
+        MoveCamera();
+        
     }
 
-    //private void StartTouchPrimary(InputAction.CallbackContext ctx)
-    //{
-    //    //if (OnStartTouch != null) OnStartTouch();
-    //}
+    private void MoveCamera()
+    {
+        Vector2 dragDelta = rotationAction.ReadValue<Vector2>() * rotationSpeedModifier * Time.deltaTime;
+        float rotY = -1 * dragDelta.x;
+        float rotX = dragDelta.y;
 
-    //private void EndTouchPrimary(InputAction.CallbackContext ctx)
-    //{
-    //    throw new NotImplementedException();
-    //}
+        camRotation += new Vector3(rotX, rotY, 0f);
+        camRotation.x.Clamp0360();
+        camRotation.x.ClampRef(25f, 75f);
+        camRotation.y.Clamp0360();
+        Camera.main.transform.localEulerAngles = camRotation;
+    }
 }

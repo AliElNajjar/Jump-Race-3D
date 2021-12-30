@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class FollowPlayer : MonoBehaviour
+public class CameraController : MonoBehaviour
 {
     [SerializeField] private Transform player;
     [SerializeField] private Vector3 offsetPosition;
@@ -15,7 +12,6 @@ public class FollowPlayer : MonoBehaviour
 
     private void LateUpdate()
     {
-        transform.position = player.TransformPoint(offsetPosition);
-        transform.LookAt(player);
+        transform.parent.position = player.TransformPoint(offsetPosition);
     }
 }
