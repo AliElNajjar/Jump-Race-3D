@@ -59,86 +59,74 @@ public class PlayerController : MonoBehaviour
 
     private void Movement()
     {
-        if (Input.touchCount > 0)
-        {
-            touch = Input.GetTouch(0);
+        //if (Input.touchCount > 0)
+        //{
+        //    touch = Input.GetTouch(0);
 
-            if (touch.phase == TouchPhase.Began)
-            {
-                firstTouch = touch.position.y;
-            }
+        //    if (touch.phase == TouchPhase.Began)
+        //    {
+        //        firstTouch = touch.position.y;
+        //    }
 
-            if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
-            {
-                rotationY = Quaternion.Euler(0f, touch.deltaPosition.x * rotationSpeedModifier * Time.fixedDeltaTime, 0f);
+        //    if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
+        //    {
+        //        rotationY = Quaternion.Euler(0f, touch.deltaPosition.x * rotationSpeedModifier * Time.fixedDeltaTime, 0f);
 
-                transform.rotation *= rotationY;
+        //        transform.rotation *= rotationY;
 
-                float deltaPositionY = touch.position.y - firstTouch;
+        //        float deltaPositionY = touch.position.y - firstTouch;
 
-                if (deltaPositionY >= forwardOffset || ismoving)
-                {
-                    ismoving = true;
+        //        if (deltaPositionY >= forwardOffset || ismoving)
+        //        {
+        //            ismoving = true;
 
-                    Vector3 direction = new Vector3(0f, 0f, m_moveSpeed * Time.fixedDeltaTime);
+        //            Vector3 direction = new Vector3(0f, 0f, m_moveSpeed * Time.fixedDeltaTime);
 
-                    currentDirection = Vector3.Lerp(currentDirection, direction, 0.5f);
+        //            currentDirection = Vector3.Lerp(currentDirection, direction, 0.5f);
 
-                    transform.Translate(currentDirection, Space.Self);
+        //            transform.Translate(currentDirection, Space.Self);
 
-                }
-                else
-                {
-                    ismoving = false;
+        //        }
+        //        else
+        //        {
+        //            ismoving = false;
 
-                    rb.velocity = new Vector3(0, rb.velocity.y, 0);
+        //            rb.velocity = new Vector3(0, rb.velocity.y, 0);
 
-                }
+        //        }
 
-            }
-            else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
-            {
-                ismoving = false;
-            }
-        }
+        //    }
+        //    else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+        //    {
+        //        ismoving = false;
+        //    }
+        //}
 
     }
 
     private void JumpingAndLanding()
     {
         //if (game is running)
-        //{
-
-        // To animate when reaching/leaving a platform
-        if (!wasGrounded && isGrounded) //Land
+        if (!wasGrounded && isGrounded) //Jump
         {
             animator.SetTrigger("Jump");
 
             jumpDistance = 0;
             firstPosition = transform.position;
             jumpSound.Play();
-            counter++;
             rb.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
 
         }
 
-        if (!isGrounded && wasGrounded) //Jump
+        if (!isGrounded && wasGrounded)
         {
-            //animator.SetTrigger("Land");
             CalJumpDistance();
         }
-
-        //To always instantly jump when on platform
-        //if (isGrounded)
-        //{
-            
-        //}
-        // }
-
     }
 
     private void CalJumpDistance()
     {
+        //the distance between platforms, should call this on another script
         secondPosition = transform.position;
         jumpDistance = Vector3.Distance(firstPosition, secondPosition);
 
