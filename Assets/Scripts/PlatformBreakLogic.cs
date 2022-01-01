@@ -45,6 +45,7 @@ public class PlatformBreakLogic : MonoBehaviour
         if (jumpCount == 0) // first hit
         {
             _renderer.material = material[0]; // first crack
+            //_renderer.material.mainTexture = change Texture.
 
             jumpCount++;
 
